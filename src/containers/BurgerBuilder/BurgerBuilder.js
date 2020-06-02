@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Aux from '../../hoc/Aux';
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
 
 // Price list of ingredients
 const INGREDIENTS_PRICE = {
@@ -21,8 +22,8 @@ class BurgerBuilder extends Component {
             bacon  : 0,
             meat   : 0
         },
-
-        finalPrice : 2
+        finalPrice : 2,
+        numberOfItems : 0
     }
 
     //Adding new ingredients
@@ -31,7 +32,9 @@ class BurgerBuilder extends Component {
         const updatedIngredientsState = {...this.state.ingredients};
         updatedIngredientsState[type] = updatedCount;
         const updatedPrice = this.state.finalPrice + INGREDIENTS_PRICE[type];
-        this.setState({ingredients:updatedIngredientsState, finalPrice:updatedPrice});
+        const updatedNumberOfItems = this.state.numberOfItems+1;
+        this.setState({ingredients:updatedIngredientsState, finalPrice:updatedPrice, 
+            numberOfItems:updatedNumberOfItems});
     }
 
     //Removing ingredients
@@ -42,6 +45,9 @@ class BurgerBuilder extends Component {
             updatedIngredientsState[type] = updatedCount;
             const updatedPrice = this.state.finalPrice - INGREDIENTS_PRICE[type];
             this.setState({ingredients:updatedIngredientsState, finalPrice:updatedPrice});
+            const updatedNumberOfItems = this.state.numberOfItems-1;
+            this.setState({ingredients:updatedIngredientsState, finalPrice:updatedPrice, 
+            numberOfItems:updatedNumberOfItems});
         }
     }
 
@@ -55,12 +61,14 @@ class BurgerBuilder extends Component {
 
         return(
             <Aux>
+                <Modal ingredients = { this.state.ingredients }></Modal>
                 <Burger ingridients = { this.state.ingredients }/>
                 <BuildControls 
                     ingredientAdded = { this.addIngredientsHandler }
                     ingredientRemoved = { this.removeIngredientsHandler }
                     disabled = {disabledinfo}
                     price = {this.state.finalPrice}
+                    numberOfItems = { this.state.numberOfItems }
                 />
             </Aux>
         );
